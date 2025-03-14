@@ -1,27 +1,8 @@
 /****************************************************************
  * Memory map configuration for using application with MCU-boot *
  ****************************************************************/
-/*
- * Internal nRF52 flash memory:
- * 0x00000000: MCUBoot(28 kB)
- * 0x00007000: Reboot logs (4 kB)
- * 0x00008000: MCUBoot header (32 bytes)
- * 0x00008020: Application (463+ kB)
- * 0x0007be50: MCUBoot image trailer (432 bytes)
- * 0x0007c000: MCUBoot Scratch partition (4 kB)
- * 0x0007d000: unused (12 kB)
- *
- * SPI flash:
- * 0x00000000: Bootloader Assets, like Boot Graphic (256 kB)
- * 0x00040000: Application 2 (including MCUBoot header) (464 kB)
- * 0x000b4000: User files - littlefs (3376 kB)
- *
- * This linker script sets the origin of the application at 0x00
- * which means that the application must be linked with a start
- * address at 0x00 and that it'll overwrite the bootloader.
- * This is very practical when debugging and testing on
- * the hardware with a SWD probe.
- */
+/* Specify the entry point for the application */
+ENTRY(Reset_Handler)
 
 SEARCH_DIR(.)
 GROUP(-lgcc -lc -lnosys)
@@ -41,7 +22,7 @@ MEMORY
   RAM (rwx)   : ORIGIN = 0x20000000, LENGTH = 64K   /* RAM */
 }
 
-
+/* Your existing sections for .noinit, .cli_sorted_cmd_ptrs, etc. */
 SECTIONS
 {
   .noinit(NOLOAD):
@@ -82,8 +63,6 @@ SECTIONS
     KEEP(*(SORT(.log_filter_data*)))
     PROVIDE(__stop_log_filter_data = .);
   } > RAM
-
-
 } INSERT AFTER .data;
 
 SECTIONS
@@ -121,19 +100,19 @@ SECTIONS
     KEEP(*(SORT(.sdh_stack_observers*)))
     PROVIDE(__stop_sdh_stack_observers = .);
   } > FLASH
-    .nrf_queue :
+  .nrf_queue :
   {
     PROVIDE(__start_nrf_queue = .);
     KEEP(*(.nrf_queue))
     PROVIDE(__stop_nrf_queue = .);
   } > FLASH
-    .nrf_balloc :
+  .nrf_balloc :
   {
     PROVIDE(__start_nrf_balloc = .);
     KEEP(*(.nrf_balloc))
     PROVIDE(__stop_nrf_balloc = .);
   } > FLASH
-    .cli_command :
+  .cli_command :
   {
     PROVIDE(__start_cli_command = .);
     KEEP(*(.cli_command))
@@ -163,14 +142,12 @@ SECTIONS
     KEEP(*(SORT(.log_backends*)))
     PROVIDE(__stop_log_backends = .);
   } > FLASH
-    .nrf_balloc :
+  .nrf_balloc :
   {
     PROVIDE(__start_nrf_balloc = .);
     KEEP(*(.nrf_balloc))
     PROVIDE(__stop_nrf_balloc = .);
   } > FLASH
-
 } INSERT AFTER .text
-
 
 INCLUDE "./nrf_common.ld"

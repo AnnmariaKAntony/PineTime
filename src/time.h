@@ -1,53 +1,96 @@
-#ifndef TIME_H
-#define TIME_H
+#pragma once
 
-#include <stdint.h>
+#include <cstdint>
+#include <chrono>
+#include <ctime>
+#include <string>
 
-/* Simple structure to hold the current time */
-struct time_struct {
-    uint8_t hours;
-    uint8_t minutes;
-    uint8_t seconds;
-};
+namespace Pinetime {
+  namespace Controllers {
+    class DateTime {
+    public:
+      DateTime();
 
-extern volatile struct time_struct current_time;
+      enum class Days : uint8_t { Unknown, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday };
+      enum class Months : uint8_t {
+        Unknown,
+        January,
+        February,
+        March,
+        April,
+        May,
+        June,
+        July,
+        August,
+        September,
+        October,
+        November,
+        December
+      };
 
-/* Initialize the software clock (sets the time to 00:00:00) */
-void time_init(void);
+      // Set the time using year, month, day, hour, minute, and second.
+      void SetTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second);
 
-/* Increment the time by one second (called by the RTC interrupt) */
-void increment_time(void);
+      // Set the time zone. 'timezone' and 'dst' are in quarters of an hour.
+      void SetTimeZone(int8_t timezone, int8_t dst);
 
-/* Format the current time as a string "HH:MM:SS" */
-void get_time_string(char *buf, int len);
+      uint16_t Year() const { return 1900 + localTime.tm_year; }
+      Months Month() const { return static_cast<Months>(localTime.tm_mon + 1); }
+      uint8_t Day() const { return localTime.tm_mday; }
+      Days DayOfWeek() const { int daysSinceSunday = localTime.tm_wday; return daysSinceSunday == 0 ? Days::Sunday : static_cast<Days>(daysSinceSunday); }
+      int DayOfYear() const { return localTime.tm_yday + 1; }
+      uint8_t Hours() const { return localTime.tm_hour; }
+      uint8_t Minutes() const { return localTime.tm_min; }
+      uint8_t Seconds() const { return localTime.tm_sec; }
 
-/* Initialize the RTC peripheral to generate a 1Hz tick */
-void rtc_init(void);
+      // Returns the offset (in quarters of an hour) between local time and UTC.
+      int8_t UtcOffset() const { return tzOffset + dstOffset; }
+      // Returns the base timezone offset (in quarters of an hour).
+      int8_t TzOffset() const { return tzOffset; }
+      // Returns the daylight saving offset (in quarters of an hour).
+      int8_t DstOffset() const { return dstOffset; }
 
-/* Minimal RTC register definitions for the nRF52 */
-typedef struct {
-    volatile uint32_t TASKS_START;
-    volatile uint32_t TASKS_STOP;
-    volatile uint32_t TASKS_CLEAR;
-    uint32_t RESERVED0[1];
-    volatile uint32_t TASKS_TRIGOVRFLW;
-    uint32_t RESERVED1[56];
-    volatile uint32_t EVENTS_TICK;
-    uint32_t RESERVED2[1];
-    volatile uint32_t EVENTS_OVRFLW;
-    uint32_t RESERVED3[12];
-    volatile uint32_t EVENTS_COMPARE[4];
-    uint32_t RESERVED4[172];
-    volatile uint32_t INTENSET;
-    volatile uint32_t INTENCLR;
-    uint32_t RESERVED5[61];
-    volatile uint32_t COUNTER;
-    volatile uint32_t PRESCALER;
-    uint32_t RESERVED6[1];
-    volatile uint32_t CC[4];
-} RTC_Type;
+      const char* MonthShortToString() const;
+      const char* DayOfWeekShortToString() const;
+      static const char* MonthShortToStringLow(Months month);
+      static const char* DayOfWeekShortToStringLow(Days day);
 
-#define RTC0_BASE 0x4000B000UL
-#define RTC0 ((RTC_Type *) RTC0_BASE)
+      // Returns the current date/time as stored internally.
+      std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> CurrentDateTime();
 
-#endif // TIME_H
+      // Returns the UTC time computed from the stored local time.
+      std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> UTCDateTime() {
+        return CurrentDateTime() - std::chrono::seconds((tzOffset + dstOffset) * 15 * 60);
+      }
+
+      // Returns the system uptime (in seconds).
+      std::chrono::seconds Uptime() const { return uptime; }
+
+      // Sets the current date/time.
+      void SetCurrentTime(std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> t);
+
+      // Returns the time formatted as a string (24‑hour format is used in this bare‑metal version).
+      std::string FormattedTime();
+
+      // In this bare‑metal version the UpdateTime method is meant to be called with a tick count
+      // (for example, from your main loop or timer interrupt) to update the stored time.
+      // The systickCounter parameter should be provided by your hardware timer.
+    private:
+      void UpdateTime(uint32_t systickCounter, bool forceUpdate);
+
+      std::tm localTime{};
+      int8_t tzOffset = 0;
+      int8_t dstOffset = 0;
+
+      // These variables help simulate a continuously increasing clock.
+      uint32_t previousSystickCounter = 0;
+      std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> currentDateTime;
+      std::chrono::seconds uptime {0};
+
+      // Flags to avoid multiple notifications. In this bare‑metal version the notifications are only commented.
+      bool isMidnightAlreadyNotified = false;
+      bool isHourAlreadyNotified = true;
+      bool isHalfHourAlreadyNotified = true;
+    };
+  }
+}
