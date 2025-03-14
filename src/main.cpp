@@ -1,24 +1,26 @@
 #include "display.h"
 #include "time.h"
+#include "nrf.h"         // Core nRF definitions
+#include "nrf_rtc.h"     // RTC definitions for nRF52
 
-/* Simple busy-loop delay (not power-efficient) */
+// Simple busy-loop delay (not power-efficient)
 static void delay(volatile uint32_t count) {
     while(count--) { __asm("nop"); }
 }
 
-/* RTC0 Interrupt Handler.
- * This function must be linked in the interrupt vector table (typically via your startup file).
- */
-void RTC0_IRQHandler(void) {
-    if (RTC0->EVENTS_COMPARE[0]) {
-        RTC0->EVENTS_COMPARE[0] = 0;  // Clear the event flag
-        increment_time();             // Update our time structure
-        RTC0->CC[0] += 1;             // Schedule the next 1-second tick
+// RTC0 Interrupt Handler.
+// Make sure this function is linked in your interrupt vector table.
+extern "C" void RTC0_IRQHandler(void) {
+    if (NRF_RTC0->EVENTS_COMPARE[0]) {
+        NRF_RTC0->EVENTS_COMPARE[0] = 0;  // Clear the event flag
+        increment_time();                // Update time tracking
+        NRF_RTC0->CC[0] += 1;             // Schedule the next tick
     }
 }
 
+
 int main(void) {
-    /* Initialize display and timekeeping */
+    // Initialize display and timekeeping.
     display_init();
     time_init();
     rtc_init();
@@ -30,7 +32,7 @@ int main(void) {
         display_clear();
         display_draw_string(time_str);
         
-        /* Delay to reduce redraw frequency */
+        // Delay to reduce redraw frequency.
         delay(1000000);
     }
     
