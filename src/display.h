@@ -1,16 +1,15 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-#include <stdint.h>
+#include <cstdint>
 
-/* Initialize the display (SPI and GPIOs) */
+/// Initializes the display: configures SPI and control GPIOs, resets the display.
 void display_init(void);
 
-/* Clear the display (send a “clear screen” command) */
+/// Clears the display by sending a clear command.
 void display_clear(void);
 
-/* Draw a string on the display.
-   (A real implementation would convert the string into pixel data using a font table.) */
-void display_draw_string(const char *str);
+/// Draws a string on the display (a simple implementation that sends the string via SPI).
+void display_draw_string(const char* str);
 
 #endif // DISPLAY_H
