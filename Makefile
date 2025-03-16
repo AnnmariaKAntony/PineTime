@@ -50,7 +50,7 @@ LDFLAGS = -T gcc_nrf52.ld -nostartfiles -Wl,--gc-sections
 # SRC_FILES += src/Spi.cpp
 
 CXXSRCS = src/time.cpp src/main.cpp \
-          src/St7789.cpp src/Spi.cpp # src/SpiMaster.cpp
+          src/St7789.cpp src/SpiMaster.cpp # src/Spi.cpp 
 
 CSRCS = src/display.c \
         $(HOME)/nrf52_sdk/modules/nrfx/drivers/src/nrfx_gpiote.c \

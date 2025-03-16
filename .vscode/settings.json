@@ -2,6 +2,10 @@
     "C_Cpp.default.compilerPath": "/usr/bin/gcc",
     "files.associations": {
         "cstring": "cpp",
-        "cstddef": "cpp"
+        "cstddef": "cpp",
+        "array": "cpp",
+        "string_view": "cpp",
+        "vector": "cpp",
+        "string": "cpp"
     }
 }
