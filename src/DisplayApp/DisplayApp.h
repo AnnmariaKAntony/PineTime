@@ -39,9 +39,9 @@ namespace Pinetime {
                 void RunningState();
                 void IdleState();
 
-                static constexpr uint8_t pinLcdBacklight1 = 14;
-                static constexpr uint8_t pinLcdBacklight2 = 22;
-                static constexpr uint8_t pinLcdBacklight3 = 23;
+                static constexpr uint8_t LcdBacklightLow = 14;
+                static constexpr uint8_t LcdBacklightMedium = 22;
+                static constexpr uint8_t LcdBacklightHigh = 23;
         };
     }
 }

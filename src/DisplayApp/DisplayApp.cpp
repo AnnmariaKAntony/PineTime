@@ -41,12 +41,12 @@ void DisplayApp::Start() {
 
 
 void DisplayApp::InitHw() {
-    nrf_gpio_cfg_output(pinLcdBacklight1);
-    nrf_gpio_cfg_output(pinLcdBacklight2);
-    nrf_gpio_cfg_output(pinLcdBacklight3);
-    nrf_gpio_pin_set(pinLcdBacklight1);
-    nrf_gpio_pin_set(pinLcdBacklight2);
-    nrf_gpio_pin_set(pinLcdBacklight3);
+    nrf_gpio_cfg_output(LcdBacklightLow);
+    nrf_gpio_cfg_output(LcdBacklightMedium);
+    nrf_gpio_cfg_output(LcdBacklightHigh);
+    nrf_gpio_pin_set(LcdBacklightLow);
+    nrf_gpio_pin_set(LcdBacklightMedium);
+    nrf_gpio_pin_set(LcdBacklightHigh);
   
     // Refresh the current screen immediately.
     currentScreen->Refresh(true);
