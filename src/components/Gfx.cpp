@@ -11,7 +11,7 @@ void Gfx::Init() {
 }
 
 void Gfx::ClearScreen() {
-  SetBackgroundColor(0x0000);
+  SetBackgroundColor(0xffff);
 
   state.remainingIterations = 240 + 1;
   state.currentIteration = 0;

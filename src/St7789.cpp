@@ -9,7 +9,6 @@ St7789::St7789(SpiMaster &spiMaster, uint8_t pinDataCommand) : spi{spiMaster}, p
 
 }
 
-
 void St7789::Init() {
   nrf_gpio_cfg_output(pinDataCommand);
   nrf_gpio_cfg_output(26);

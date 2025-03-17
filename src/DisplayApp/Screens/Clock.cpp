@@ -1,7 +1,6 @@
 #include <cstdio>
-#include <libs/date/includes/date/date.h>
-#include <../../time.h>
-#include <../../Version.h>
+#include "../../libs/date/includes/date/date.h"
+#include "../../time.h"
 #include "Clock.h"
 
 using namespace Pinetime::Applications::Screens;
@@ -90,11 +89,11 @@ void Clock::Refresh(bool fullRefresh) {
     }
   }
 
-  if(fullRefresh || version.IsUpdated()) {
-    char version[20];
-    sprintf(version, "VERSION: %d.%d.%d", Version::Major(), Version::Minor(), Version::Patch());
-    gfx.DrawString(20, 220, 0xffff, version, &smallFont, false);
-  }
+  // if(fullRefresh || version.IsUpdated()) {
+  //   char version[20];
+  //   sprintf(version, "VERSION: %d.%d.%d", Version::Major(), Version::Minor(), Version::Patch());
+  //   gfx.DrawString(20, 220, 0xffff, version, &smallFont, false);
+  // }
 }
 
 const char *Clock::MonthToString(Pinetime::Controllers::DateTime::Months month) {

@@ -31,9 +31,14 @@ INCLUDES = -I$(HOME)/nrf52_sdk/modules/nrfx/mdk \
 		   -I$(HOME)/nrf52_sdk/components/libraries/experimental_section_vars \
 		   -I$(HOME)/nrf52_sdk/components/libraries/log/src \
 		   -I$(HOME)/nrf52_sdk/modules/nrfx/drivers/include \
+		   -I$(HOME)/nrf52_sdk/external/thedotfactory_fonts/ \
+		   -I$(HOME)/nrf52_sdk/components/libraries/svc/ \
+		   -I$(HOME)/nrf52_sdk/components/boards/
 
 # Append include paths to compiler flags
 CFLAGS += $(INCLUDES)
+CFLAGS += -DBOARD_PINETIME_DEVKIT1
+
 CXXFLAGS += $(INCLUDES)
 
 # Assembler Flags
@@ -50,11 +55,13 @@ LDFLAGS = -T gcc_nrf52.ld -nostartfiles -Wl,--gc-sections
 # SRC_FILES += src/Spi.cpp
 
 CXXSRCS = src/time.cpp src/main.cpp \
-          src/St7789.cpp src/SpiMaster.cpp # src/Spi.cpp 
+          src/St7789.cpp src/SpiMaster.cpp src/components/Gfx.cpp src/DisplayApp/DisplayApp.cpp\
+		  src/DisplayApp/Screens/Clock.cpp src/DisplayApp/Screens/Screen.cpp
 
 CSRCS = src/display.c \
         $(HOME)/nrf52_sdk/modules/nrfx/drivers/src/nrfx_gpiote.c \
-        $(HOME)/nrf52_sdk/components/libraries/util/app_error.c
+        $(HOME)/nrf52_sdk/components/libraries/util/app_error.c \
+		src/DisplayApp/Fonts/lcdfont70.c src/DisplayApp/Fonts/lcdfont14.c
 
 # Startup assembly file
 ASRC = startup_nrf52.s

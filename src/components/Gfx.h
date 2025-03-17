@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <nrf_font.h>
-#include <../BufferProvider.h>
+#include "../BufferProvider.h"
 
 
 namespace Pinetime {

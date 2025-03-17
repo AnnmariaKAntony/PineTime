@@ -1,6 +1,6 @@
 #pragma once
 
-#include <../../components/Gfx.h>
+#include "../../components/Gfx.h"
 
 namespace Pinetime {
   namespace Applications {

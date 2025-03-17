@@ -1,13 +1,12 @@
 #pragma once
 
-#include <../St7789.h>
-#include <../SpiMaster.h>
-#include <../components/Gfx.h>
-#include <queue.h>
-#include <../time.h>
+#include "../St7789.h"
+#include "../SpiMaster.h"
+#include "../components/Gfx.h"
+// #include <queue.h>
+#include "../time.h"
 #include "Fonts/lcdfont14.h"
-#include </Screens/Clock.h>
-#include </Screens/Message.h>
+#include "Screens/Clock.h"
 
 extern const FONT_INFO lCD_70ptFontInfo;
 

@@ -7,7 +7,6 @@
 #include <bits/unique_ptr.h>
 #include "../Fonts/lcdfont14.h"
 #include "../Fonts/lcdfont70.h"
-#include "../../Version.h"
 
 namespace Pinetime {
   namespace Applications {
@@ -33,7 +32,7 @@ namespace Pinetime {
       class Clock : public Screen{
         public:
           enum class BleConnectionStates{ NotConnected, Connected};
-          Clock(Components::Gfx& gfx) : Screen(gfx), currentDateTime{{}}, version {{}} {}
+          Clock(Components::Gfx& gfx) : Screen(gfx), currentDateTime{{}} {}
           void Refresh(bool fullRefresh) override;
 
           void SetBatteryPercentRemaining(uint8_t percent) { batteryPercentRemaining = percent; }
@@ -58,7 +57,6 @@ namespace Pinetime {
           DirtyValue<uint8_t> batteryPercentRemaining  {0};
           DirtyValue<BleConnectionStates> bleState {BleConnectionStates::NotConnected};
           DirtyValue<std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds>> currentDateTime;
-          DirtyValue<Pinetime::Version> version;
       };
     }
   }
