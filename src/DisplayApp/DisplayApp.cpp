@@ -31,14 +31,13 @@ void DisplayApp::Start() {
     while (true) {
         Refresh();
         
-        // Add a simple busy-wait delay to avoid looping too fast.
-        // You might want to replace this with a more appropriate timing function.
+        // Stalling with a nop to delay :D
         for (volatile uint32_t i = 0; i < 1000000; i++) {
             __asm("nop");
         }
     }
 }
-
+ 
 
 void DisplayApp::InitHw() {
     nrf_gpio_cfg_output(LcdBacklightLow);
@@ -48,7 +47,7 @@ void DisplayApp::InitHw() {
     nrf_gpio_pin_set(LcdBacklightMedium);
     nrf_gpio_pin_set(LcdBacklightHigh);
   
-    // Refresh the current screen immediately.
+    // try to refresh the current screen
     currentScreen->Refresh(true);
 }
 
@@ -79,21 +78,14 @@ void DisplayApp::Refresh() {
     // }
     
     // count++;
-    // toggle = !toggle;c
+    // toggle = !toggle;
 }
 
 void DisplayApp::RunningState() {
-    // Example state: update the clock screen with the current date/time.
     clockScreen.SetCurrentDateTime(std::chrono::time_point_cast<std::chrono::milliseconds>(dateTimeController.CurrentDateTime()));
-    
-    
-    if (currentScreen != nullptr) {
-        currentScreen->Refresh(true);
-    }
-    
-    // If you had more than one screen, you could toggle between them here.
+    if (currentScreen != nullptr) currentScreen->Refresh(true);
 }
 
 void DisplayApp::IdleState() {
-    // Implement idle behavior if needed (e.g., dim the display).
+    // unimplemented (unneeded)
 }

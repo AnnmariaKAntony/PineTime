@@ -3,7 +3,6 @@
 #include "../St7789.h"
 #include "../SpiMaster.h"
 #include "../components/Gfx.h"
-// #include <queue.h>
 #include "../time.h"
 #include "Fonts/lcdfont14.h"
 #include "Screens/Clock.h"
@@ -16,9 +15,6 @@ namespace Pinetime {
             public:
                 DisplayApp(Pinetime::Drivers::St7789& lcd,
                     Pinetime::Components::Gfx& gfx,
-                    // Pinetime::Drivers::Cst816S&,
-                    // Controllers::Battery &batteryController,
-                    // Controllers::Ble &bleController,
                     Controllers::DateTime& dateTimeController);
 
                 void Start();

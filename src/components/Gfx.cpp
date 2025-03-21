@@ -20,7 +20,7 @@ void Gfx::ClearScreen() {
 
   lcd.BeginDrawBuffer(0, 0, width, height);
   lcd.NextDrawBuffer(reinterpret_cast<const uint8_t *>(buffer), width * 2);
-  while(state.busy) {} // TODO wait on an event/queue/... instead of polling
+  while(state.busy) {} 
 }
 
 void Gfx::FillRectangle(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t color) {
@@ -33,12 +33,11 @@ void Gfx::FillRectangle(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint16_t col
 
   lcd.BeginDrawBuffer(x, y, w, h);
   lcd.NextDrawBuffer(reinterpret_cast<const uint8_t *>(buffer), width * 2);
-  while(state.busy) {} // TODO wait on an event/queue/... instead of polling
+  while(state.busy) {} 
 }
 
 void Gfx::DrawString(uint8_t x, uint8_t y, uint16_t color, const char *text, const FONT_INFO *p_font, bool wrap) {
   if (y > (height - p_font->height)) {
-    // Not enough space to write even single char.
     return;
   }
 
@@ -103,7 +102,7 @@ void Gfx::DrawChar(const FONT_INFO *font, uint8_t c, uint8_t *x, uint8_t y, uint
 
   lcd.BeginDrawBuffer(*x, y, bytes_in_line*8, font->height);
   lcd.NextDrawBuffer(reinterpret_cast<const uint8_t *>(&buffer), bytes_in_line*8*2);
-  while(state.busy) {} // TODO wait on an event/queue/... instead of polling
+  while(state.busy) {} 
 
   *x += font->charInfo[char_idx].widthBits + font->spacePixels;
 }

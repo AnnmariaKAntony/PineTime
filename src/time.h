@@ -11,7 +11,7 @@ namespace Pinetime {
 
     class DateTime {
     private:
-      std::tm localTime{};  // Current local time data.
+      std::tm localTime{};  // struct from ctime library that we use to hold the time
       int8_t tzOffset = 0;
       int8_t dstOffset = 0;
       uint32_t previousSystickCounter = 0;
@@ -25,23 +25,9 @@ namespace Pinetime {
       DateTime();
 
       enum class Days : uint8_t { Unknown, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday };
-      enum class Months : uint8_t {
-        Unknown,
-        January,
-        February,
-        March,
-        April,
-        May,
-        June,
-        July,
-        August,
-        September,
-        October,
-        November,
-        December
-      };
+      enum class Months : uint8_t { Unknown, January, February, March, April, May, June, July, August, September, October, November, December };
 
-      // Inline getters that use private members.
+      // We define small one-line getter functions for our year/month/day
       uint16_t Year() const { return 1900 + localTime.tm_year; }
       Months Month() const { return static_cast<Months>(localTime.tm_mon + 1); }
       uint8_t Day() const { return localTime.tm_mday; }
@@ -54,9 +40,9 @@ namespace Pinetime {
       uint8_t Minutes() const { return localTime.tm_min; }
       uint8_t Seconds() const { return localTime.tm_sec; }
 
-      int8_t UtcOffset() const { return tzOffset + dstOffset; }
-      int8_t TzOffset() const { return tzOffset; }
-      int8_t DstOffset() const { return dstOffset; }
+      int8_t UtcOffset() const { return tzOffset + dstOffset; } // coordinated universal time offset
+      int8_t TzOffset() const { return tzOffset; } // time zone offset
+      int8_t DstOffset() const { return dstOffset; } // daylight savings offset
       std::chrono::seconds Uptime() const { return uptime; }
 
       const char* MonthShortToString() const;
@@ -75,11 +61,10 @@ namespace Pinetime {
       std::string FormattedTime();
 
     private:
-      // This method is used internally to update the stored time.
+      // Updates time
       void UpdateTime(uint32_t systickCounter, bool forceUpdate);
     };
 
-    // Free functions for time management.
     void time_init();
     void rtc_init();
     void increment_time();
@@ -87,7 +72,6 @@ namespace Pinetime {
   }
 }
 
-// Provide C linkage (or aliasing) for the free functions.
 using Pinetime::Controllers::time_init;
 using Pinetime::Controllers::rtc_init;
 using Pinetime::Controllers::increment_time;
